@@ -1,6 +1,17 @@
+import { faker } from "@faker-js/faker";
 import { ICatalogRepository } from "../../interface/catalogRepository.interface";
 import { MockCatalogRespository } from "../../repository/mockCatalog.repository";
 import { CatalogService } from "../catalog.service";
+import { Product } from "../../models/product.model";
+
+const mockProduct = (rest: any) => {
+    return {
+        name: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        stock: faker.number.int({min: 10, max: 100}),
+        ...rest,
+    };
+}
 
 describe("catalogService", () => {
 
@@ -14,13 +25,9 @@ describe("catalogService", () => {
     describe("createProduct", () => {
         test("should create product", async() => {
             const service = new CatalogService(repository);
-            const requestBody = {
-                name: "iPhone",
-                description: "Smart Phone",
-                price: 999,
-                stock: 11,
-                id: 101,
-            }
+            const requestBody = mockProduct({
+                price: +faker.commerce.price(),
+            }); 
             const result = await service.createProduct(requestBody);
             expect(result).toMatchObject({
                 name: expect.any(String),
@@ -31,8 +38,26 @@ describe("catalogService", () => {
             });
         });
 
-        test("should throw error with product already exists", () => {
-            
+        test("should throw error with unable to create product", async() => {
+            const service = new CatalogService(repository);
+            const requestBody = mockProduct({
+                price: +faker.commerce.price(),
+            });
+            jest
+                .spyOn(repository, 'create')
+                .mockImplementationOnce(() => Promise.resolve({} as Product));
+            await expect(service.createProduct(requestBody)).rejects.toThrow("unable to create product");
+        });
+
+        test("should throw error with product already exists", async() => {
+            const service = new CatalogService(repository);
+            const requestBody = mockProduct({
+                price: +faker.commerce.price(),
+            });
+            jest
+                .spyOn(repository, 'create')
+                .mockImplementationOnce(() => Promise.reject(new Error("product already exists")));
+            await expect(service.createProduct(requestBody)).rejects.toThrow("product already exists");
         });
     });
 
