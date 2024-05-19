@@ -3,6 +3,14 @@ import { ICatalogRepository } from "../../interface/catalogRepository.interface"
 import { MockCatalogRespository } from "../../repository/mockCatalog.repository";
 import { CatalogService } from "../catalog.service";
 import { Product } from "../../models/product.model";
+import { Factory } from 'rosie'; // factory for generating random Array's of Data
+
+const productFactory = new Factory<Product>()
+    .attr("id", faker.number.int({min: 1, max: 1000}))
+    .attr("description", faker.commerce.productDescription())
+    .attr("name", faker.commerce.productName())
+    .attr("stock", faker.number.int({ min: 10, max: 100}))
+    .attr("price", +faker.commerce.price());
 
 const mockProduct = (rest: any) => {
     return {
@@ -16,15 +24,16 @@ const mockProduct = (rest: any) => {
 describe("catalogService", () => {
 
     let repository: ICatalogRepository;
+    let service: CatalogService;
 
     // setup something, pre-requisite
     beforeEach(() => {
         repository = new MockCatalogRespository()
+        service = new CatalogService(repository);
     });
 
     describe("createProduct", () => {
         test("should create product", async() => {
-            const service = new CatalogService(repository);
             const requestBody = mockProduct({
                 price: +faker.commerce.price(),
             }); 
@@ -39,7 +48,6 @@ describe("catalogService", () => {
         });
 
         test("should throw error with unable to create product", async() => {
-            const service = new CatalogService(repository);
             const requestBody = mockProduct({
                 price: +faker.commerce.price(),
             });
@@ -50,7 +58,6 @@ describe("catalogService", () => {
         });
 
         test("should throw error with product already exists", async() => {
-            const service = new CatalogService(repository);
             const requestBody = mockProduct({
                 price: +faker.commerce.price(),
             });
@@ -63,7 +70,6 @@ describe("catalogService", () => {
 
     describe("updateProduct", () => {
         test("should update product", async() => {
-            const service = new CatalogService(repository);
             const requestBody = mockProduct({
                 price: +faker.commerce.price(),
                 id: faker.number.int({min: 10, max: 1000}),
@@ -73,21 +79,37 @@ describe("catalogService", () => {
         });
 
         test("should throw error with product does not exists", async() => {
-            const service = new CatalogService(repository);
             const requestBody = mockProduct({
                 price: +faker.commerce.price(),
             });
             jest
                 .spyOn(repository, "update")
                 .mockImplementationOnce(() => 
-                    Promise.reject(new Error("product does not exists")))
-                ;
+                    Promise.reject(new Error("product does not exists")));
             await expect(service.updateProduct(requestBody)).rejects.toThrow("product does not exists");
         });
+    });
+
+    describe("getProducts", () => {
+        test("should get products by offset and limit", async() => {
+            const randomLimit = faker.number.int({min: 10, max: 50});
+            const products = productFactory.buildList(randomLimit);
+            jest
+                .spyOn(repository, 'find')
+                .mockImplementationOnce(() => Promise.resolve(products));
+            const result = await service.getProducts(randomLimit, 0);
+            expect(result.length).toEqual(randomLimit);
+            expect(result).toMatchObject(products);
+        })
     })
 
     // clean up
     afterEach(() => {
         repository = {} as MockCatalogRespository;
+    });
+
+    // clean up All
+    afterAll(() => {
+        service = {} as CatalogService;
     });
 });
