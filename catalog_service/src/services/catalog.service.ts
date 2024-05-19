@@ -27,11 +27,17 @@ export class CatalogService {
 
     async getProducts(limit: number, offset: number){
         const products = await this._repository.find(limit, offset);
+        if(!products){
+            throw new Error("unable to get products");
+        }
         return products;
     }
 
     async getProduct(id: number){
         const product = await this._repository.findOne(id);
+        if(!product){
+            throw new Error("unable to get product by id");
+        }
         return product;
     }
 
