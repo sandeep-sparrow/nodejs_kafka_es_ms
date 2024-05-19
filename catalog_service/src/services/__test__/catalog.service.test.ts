@@ -61,6 +61,31 @@ describe("catalogService", () => {
         });
     });
 
+    describe("updateProduct", () => {
+        test("should update product", async() => {
+            const service = new CatalogService(repository);
+            const requestBody = mockProduct({
+                price: +faker.commerce.price(),
+                id: faker.number.int({min: 10, max: 1000}),
+            });
+            const result = await service.updateProduct(requestBody);
+            expect(result).toMatchObject(requestBody);
+        });
+
+        test("should throw error with product does not exists", async() => {
+            const service = new CatalogService(repository);
+            const requestBody = mockProduct({
+                price: +faker.commerce.price(),
+            });
+            jest
+                .spyOn(repository, "update")
+                .mockImplementationOnce(() => 
+                    Promise.reject(new Error("product does not exists")))
+                ;
+            await expect(service.updateProduct(requestBody)).rejects.toThrow("product does not exists");
+        });
+    })
+
     // clean up
     afterEach(() => {
         repository = {} as MockCatalogRespository;

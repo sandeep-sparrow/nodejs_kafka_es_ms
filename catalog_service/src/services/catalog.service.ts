@@ -16,8 +16,10 @@ export class CatalogService {
         return data;
     }
 
-    updateProduct(input: any){
-
+    async updateProduct(input: any){
+         const data = await this._repository.update(input);
+         // emit event to update record in Elastic Search
+         return data;
     }
 
     getProducts(limit: number, offset: number){
