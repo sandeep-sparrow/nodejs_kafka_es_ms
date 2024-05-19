@@ -5,7 +5,7 @@ const validationError = async (input: any
 
 ): Promise<ValidationError[] | false> => {
     const errors = await validate(input, {
-        validationError: { target: true},
+        validationError: { target: true },
     });
 
     if(errors.length) {
