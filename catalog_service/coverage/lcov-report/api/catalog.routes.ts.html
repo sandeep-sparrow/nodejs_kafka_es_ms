@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for repository/mockCatalog.repository.ts</title>
+    <title>Code coverage report for api/catalog.routes.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">repository</a> mockCatalog.repository.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">api</a> catalog.routes.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/28</span>
+                <span class='fraction'>24/27</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">50% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/5</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/28</span>
+                <span class='fraction'>24/27</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -89,8 +89,10 @@
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -109,49 +111,44 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { ICatalogRepository } from "../interface/catalogRepository.interface";
-import { Product } from "../models/product.model";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import express, { NextFunction, Request, Response } from "express";
+import { CatalogService } from "../services/catalog.service";
+import { CatalogRespository } from "../repository/catalog.repository";
+import { RequestValidator } from "../utils/requestValidator";
+import { CreateProductRequest } from "../dto/product.dto";
 &nbsp;
-export class MockCatalogRespository implements ICatalogRepository {
-    create(data: Product): Promise&lt;Product&gt; {
-        const mockProduct = {
-            ...data,
-            id: 123,
-        } as Product;
-        return Promise.resolve(mockProduct);
-    }
+const router = express.Router();
 &nbsp;
-    update(data: Product): Promise&lt;Product&gt; {
-        return Promise.resolve(data as unknown as Product);
-    }
+export const catalogService = new CatalogService(new CatalogRespository());
 &nbsp;
-<span class="fstat-no" title="function not covered" >    delete(id: any) {</span>
-<span class="cstat-no" title="statement not covered" >        return Promise.resolve(id);</span>
+// endpoints
+router.post("/products", async(req: Request, res: Response, next: NextFunction) =&gt; {
+&nbsp;
+    try {
+        const { errors, input } = await RequestValidator(CreateProductRequest, req.body);
+        if(errors) <span class="branch-0 cbranch-no" title="branch not covered" >return res.status(400).json(errors);</span>
+    
+        const data = await catalogService.createProduct(input);
+        return res.status(201).json(data);
+    } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
+<span class="cstat-no" title="statement not covered" >        const err = error as Error</span>
+<span class="cstat-no" title="statement not covered" >        return res.status(500).json(err.message);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-<span class="fstat-no" title="function not covered" >    find(limit: number, offset: number): Promise&lt;Product[]&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        return Promise.resolve([]);</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
+});
 &nbsp;
-<span class="fstat-no" title="function not covered" >    findOne(id: number): Promise&lt;Product&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        return Promise.resolve({ id } as unknown as Product);</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-}</pre></td></tr></table></pre>
+export default router;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-05-19T10:03:55.825Z
+                at 2024-05-19T10:49:36.005Z
             </div>
         <script src="../prettify.js"></script>
         <script>
