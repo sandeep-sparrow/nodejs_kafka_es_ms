@@ -100,8 +100,59 @@ describe("catalogService", () => {
             const result = await service.getProducts(randomLimit, 0);
             expect(result.length).toEqual(randomLimit);
             expect(result).toMatchObject(products);
-        })
-    })
+        });
+
+        test("should throw error with products does not exists", async() => {
+            jest
+                .spyOn(repository, "find")
+                .mockImplementationOnce(() => 
+                    Promise.reject(new Error("products does not exists")));
+            await expect(service.getProducts(0,0)).rejects.toThrow("products does not exists");
+        });
+    });
+
+
+    describe("getProduct", () => {
+        test("should get product by id", async() => {
+            const product = productFactory.build();
+            jest
+                .spyOn(repository, 'findOne')
+                .mockImplementationOnce(() => Promise.resolve(product));
+            const result = await service.getProduct(product.id!);
+            expect(result).toMatchObject(product);
+        });
+
+        test("should throw error with get product by id does not exists", async() => {
+            const product = productFactory.build();
+            jest
+                .spyOn(repository, "findOne")
+                .mockImplementationOnce(() => 
+                    Promise.reject(new Error("get product does not exists")));
+            await expect(service.getProduct(product.id!)).rejects.toThrow("get product does not exists");
+        });
+    });
+
+    describe("deleteProduct", () => {
+        test("should delete product by id", async() => {
+            const product = productFactory.build();
+            jest
+                .spyOn(repository, "delete")
+                .mockImplementationOnce(() => Promise.resolve({ id: product.id! }));
+            const result = await service.deleteProduct(product.id!);
+            expect(result).toMatchObject({
+                id: product.id,
+            });
+        });
+
+        test("should throw error with delete product by id does not exists", async() => {
+            const product = productFactory.build();
+            jest
+                .spyOn(repository, "delete")
+                .mockImplementationOnce(() => 
+                    Promise.reject(new Error("delete product does not exists")));
+            await expect(service.deleteProduct(product.id!)).rejects.toThrow("delete product does not exists");
+        });
+    });
 
     // clean up
     afterEach(() => {

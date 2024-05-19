@@ -27,11 +27,14 @@ export class CatalogService {
         return products;
     }
 
-    getProduct(id: number){
-
+    async getProduct(id: number){
+        const product = await this._repository.findOne(id);
+        return product;
     }
 
-    deleteProduct(id: number){
-
+    async deleteProduct(id: number){
+        const productId = await this._repository.delete(id);
+        // emit event to delete record in Elastic Search
+        return productId; 
     }
 }
