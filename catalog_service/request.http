@@ -1,6 +1,9 @@
-POST http://localhost:8080/product
-Content-type: application.json
+POST http://localhost:8080/products
+Content-type: application/json
 
 {
-    "name": "Reynolds"
+    "name": "Reynolds",
+    "description": "Gel Pens",
+    "stock": 100,
+    "price": 10
 }
