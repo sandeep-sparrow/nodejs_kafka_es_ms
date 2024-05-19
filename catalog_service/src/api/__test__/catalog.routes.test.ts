@@ -145,7 +145,7 @@ describe("Catalog Routes", () => {
         });
     });
 
-    describe.only("GET /products/:id", () => {
+    describe("GET /products/:id", () => {
         test("should return single product by id", async() => {
             const product = ProductFactory.build();
             jest
@@ -170,6 +170,34 @@ describe("Catalog Routes", () => {
                 .set("Accept", "application/json");
             expect(response.status).toBe(500);
             expect(response.body).toEqual("unable to get product by id");
+        });
+    });
+
+    describe.only("DELETE /products/:id", () => {
+        test("should delete single product by id", async() => {
+            const product = ProductFactory.build();
+            jest
+                .spyOn(catalogService, 'deleteProduct')
+                .mockImplementationOnce(() => 
+                    Promise.resolve({id: product.id}))
+            const response = await request(app)
+                .delete(`/products/${product.id}`)
+                .set("Accept", "application/json");
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual({id: product.id});
+        });
+
+        test("should response with an internal error 500", async() => {
+            const product = ProductFactory.build();
+            jest
+                .spyOn(catalogService, 'deleteProduct')
+                .mockImplementationOnce(() => 
+                    Promise.reject(new Error("unable to delete product by id")))
+            const response = await request(app)
+                .delete(`/products/${product.id}`)
+                .set("Accept", "application/json");
+            expect(response.status).toBe(500);
+            expect(response.body).toEqual("unable to delete product by id");
         });
     });
 });
