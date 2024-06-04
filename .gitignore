@@ -25,3 +25,7 @@ yarn-error.log*
 node_modules
 
 db
+
+coverage
+*.xml
+*.iml
