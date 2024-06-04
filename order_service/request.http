@@ -1,4 +1,4 @@
-GET http://localhost:8081/cart
+GET http://localhost:8081/cart/1
 
 ### GET ORDER
 GET http://localhost:8081/order
@@ -10,6 +10,7 @@ POST http://localhost:8081/cart
 Content-Type: "application/json"
 
 {
-    "item": "smart phone",
-    "price": 1200
+    "customerId" : 1,
+    "productId": 1,
+    "qty": 2
 }    

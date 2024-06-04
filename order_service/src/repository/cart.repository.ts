@@ -10,21 +10,33 @@ const createCart = async(input: any): Promise<{}> => {
     console.log(result);
 
     return Promise.resolve({ 
-        message: "fake response from cart repository", 
+        message: "Product Create Success!", 
         input: result,
     });
 };
 
 const findCart = async(input: any): Promise<{}> => {
-    return Promise.resolve({});
+    const result = await DB.query.carts.findFirst(input);
+    return Promise.resolve({
+        message: "Product Get Success!", 
+        input: result 
+    });
 };
 
 const updateCart = async(input: any): Promise<{}> => {
-    return Promise.resolve({});
+    const result = await DB.update(input);
+    return Promise.resolve({
+        message: "Product Get Success!", 
+        input: result 
+    });
 };
 
 const deleteCart = async(input: any): Promise<{}> => {
-    return Promise.resolve({});
+    const result = await DB.delete(input);
+    return Promise.resolve({
+        message: "Product Get Success!", 
+        input: result 
+    });
 };
 
 export const CartRepository: CartRepositoryType = {
