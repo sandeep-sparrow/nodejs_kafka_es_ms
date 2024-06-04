@@ -1,11 +1,11 @@
-GET http://localhost:9000/cart
+GET http://localhost:8081/cart
 
 ### GET ORDER
-GET http://localhost:9000/order
+GET http://localhost:8081/order
 
 
 ### POST ORDER
-POST http://localhost:9000/cart
+POST http://localhost:8081/cart
 
 Content-Type: "application/json"
 
