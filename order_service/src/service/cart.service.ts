@@ -7,7 +7,7 @@ export const CreateCart = async (input: CartRequestInput, repo: CartRepositoryTy
     const product = await GetProductDetails(input.productId);
 
     if(product.stock < input.qty){
-        throw new Error("Product is Out Of Stock!");
+        throw new Error("product is Out Of Stock!").message;
     }
     const data = await repo.create(input);
     return data;

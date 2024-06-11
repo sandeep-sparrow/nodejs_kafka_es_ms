@@ -12,6 +12,7 @@ export const catalogService = new CatalogService(new CatalogRespository());
 router.post("/products", async(req: Request, res: Response, next: NextFunction) => {
 
     try {
+        console.log(req.body)
         const { errors, input } = await RequestValidator(CreateProductRequest, req.body);
         if(errors) return res.status(400).json(errors);
     

@@ -6,11 +6,10 @@ GET http://localhost:8081/order
 
 ### POST ORDER
 POST http://localhost:8081/cart
-
-Content-Type: "application/json"
+Content-Type: application/json
 
 {
-    "customerId" : 1,
-    "productId": 1,
-    "qty": 2
+    "customerId" : 2,
+    "productId": 2,
+    "qty": 5
 }    
