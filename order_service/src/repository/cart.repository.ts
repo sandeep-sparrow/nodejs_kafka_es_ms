@@ -1,5 +1,5 @@
 import { DB } from "../db/db.connection";
-import { carts } from "../db/schema";
+import { carts } from "../db/schema/carts";
 import { CartRepositoryType } from "../types/repository.type";
 
 const createCart = async(input: any): Promise<{}> => {

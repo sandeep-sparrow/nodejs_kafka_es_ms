@@ -10,6 +10,7 @@ const repo = repository.CartRepository;
 
 router.post("/cart", async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log(req.body)
         const error = ValidateRequest<CartRequestInput>(req.body as CartRequestInput, CartRequestSchema);
         if(error){
             return res.status(404).json({ error });
